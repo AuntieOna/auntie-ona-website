@@ -267,6 +267,8 @@
       border: 1px solid rgba(255,255,255,0.2);
       border-radius: var(--radius);
       padding: 32px;
+      max-width: 420px;
+      margin-left: auto;
       animation: fadeUp 0.8s 0.2s ease both;
     }
 
@@ -820,7 +822,7 @@
     /* ── Mobile ── */
     @media (max-width: 768px) {
       .hero-content { grid-template-columns: 1fr; }
-      .hero-card { display: none; }
+      .hero-card { max-width: 100%; margin: 24px 0 0; }
       .about-grid { grid-template-columns: 1fr; }
       .about-image-badge { bottom: 12px; right: 12px; }
       .learn-grid { grid-template-columns: 1fr; }
