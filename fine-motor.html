@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fine Motor & Mark Making — Auntie Ona</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --beige:       #F5EFE4;
+      --cream:       #FBF7F0;
+      --warm-white:  #FFFDF9;
+      --brown:       #8E6350;
+      --brown-mid:   #7A5240;
+      --brown-light: #B8906E;
+      --gold:        #C9993A;
+      --gold-light:  #E8C87A;
+      --muted:       #8A6F5A;
+      --border:      rgba(92,61,42,0.12);
+      --radius:      20px;
+      --pink:        #E8809A;
+      --pink-light:  #F4B8C8;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--beige);
+      color: var(--brown);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Static background stars ── */
+    .floating-stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .floating-stars .fstar {
+      position: absolute;
+      color: var(--gold);
+      user-select: none;
+      opacity: var(--op, 0.18);
+      font-size: var(--size, 0.8rem);
+    }
+
+    .site-header, .hero-banner, .intro-strip, .page-body, footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Nav ── */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background: rgba(251,247,240,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--gold-light);
+    }
+
+    .brand-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--brown);
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 999px;
+      transition: all 0.2s;
+    }
+
+    .nav-links a:hover {
+      background: rgba(92,61,42,0.08);
+      color: var(--brown);
+    }
+
+    .nav-links a.active {
+      background: var(--brown);
+      color: var(--cream);
+    }
+
+    /* ── Hamburger button ── */
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 10px;
+      transition: background 0.2s;
+    }
+    .nav-toggle:hover { background: rgba(142,99,80,0.1); }
+    .nav-toggle span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--brown);
+      border-radius: 2px;
+    }
+
+    @media (max-width: 768px) {
+      .nav-toggle { display: flex; }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        background: rgba(251,247,240,0.97);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        padding: 12px 20px 20px;
+        gap: 4px;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links li { list-style: none; }
+      .nav-links a {
+        display: block;
+        width: 100%;
+        border-radius: 12px;
+        padding: 12px 16px;
+      }
+    }
+
+    /* ── Banner ── */
+    .hero-banner {
+      width: 100%;
+      background: #f4b8c8;
+      line-height: 0;
+    }
+
+    .hero-banner img {
+      width: 100%;
+      max-height: 300px;
+      height: auto;
+      display: block;
+      object-fit: contain;
+      object-position: center;
+    }
+
+    /* ── Intro strip ── */
+    .intro-strip {
+      background: #f0e8d8;
+      padding: 1.5rem 2rem;
+      text-align: center;
+      border-bottom: 1.5px solid #e0d0b8;
+    }
+
+    .intro-strip p {
+      font-size: 0.97rem;
+      color: var(--brown-mid);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.75;
+    }
+
+    /* ── Page body ── */
+    .page-body {
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 5rem;
+    }
+
+    /* ── Section cards ── */
+    .section-card {
+      background: var(--warm-white);
+      border: 1.5px solid #e8d8c0;
+      border-radius: var(--radius);
+      padding: 2rem 2rem 1.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 30px;
+      margin-bottom: 0.65rem;
+      color: #fff;
+    }
+
+    .badge-pink   { background: var(--pink); }
+    .badge-purple { background: #9a78c0; }
+
+    .section-card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 600;
+      color: var(--brown);
+      line-height: 1.15;
+      margin: 0 0 0.75rem;
+      letter-spacing: -0.3px;
+    }
+
+    .section-rule {
+      height: 2px;
+      width: 44px;
+      border-radius: 2px;
+      margin-bottom: 1.25rem;
+    }
+
+    .rule-pink   { background: var(--pink); }
+    .rule-purple { background: #9a78c0; }
+
+    .section-card p {
+      font-size: 0.94rem;
+      color: #5a4030;
+      line-height: 1.8;
+      margin-bottom: 1rem;
+    }
+
+    /* ── Embedded video ── */
+    .video-embed {
+      margin-top: 1.25rem;
+      border-radius: 14px;
+      overflow: hidden;
+      aspect-ratio: 16 / 9;
+      width: 100%;
+      background: #000;
+    }
+
+    .video-embed iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .video-caption {
+      margin-top: 0.6rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-style: italic;
+      text-align: center;
+    }
+
+    /* ── Tip box ── */
+    .tip-box {
+      background: #fef6ea;
+      border-left: 4px solid var(--gold);
+      border-radius: 0 12px 12px 0;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+    }
+
+    .tip-box p {
+      margin: 0;
+      font-size: 0.92rem;
+      color: var(--brown-mid);
+    }
+
+    /* ── Resources strip ── */
+    .resources-strip {
+      background: var(--brown);
+      border-radius: var(--radius);
+      padding: 2.5rem 2rem;
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .resources-strip h3 {
+      font-family: 'Playfair Display', serif;
+      color: #f5e8d0;
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin: 0 0 0.6rem;
+    }
+
+    .resources-strip p {
+      color: var(--gold-light);
+      font-size: 0.92rem;
+      line-height: 1.7;
+      max-width: 440px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .btn-resources {
+      display: inline-block;
+      background: var(--gold);
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 0.92rem;
+      padding: 12px 28px;
+      border-radius: 30px;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+
+    .btn-resources:hover { opacity: 0.85; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--brown);
+      color: rgba(255,253,249,0.7);
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    .footer-inner { max-width: 1100px; margin: 0 auto; }
+
+    .footer-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      display: block;
+      border: 2px solid rgba(255,255,255,0.15);
+    }
+
+    .footer-tagline {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: rgba(255,253,249,0.9);
+      margin-bottom: 16px;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: rgba(255,253,249,0.6);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--gold-light); }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: rgba(255,253,249,0.4);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .page-body { padding: 1.5rem 1rem 4rem; }
+      .section-card { padding: 1.5rem 1.25rem; }
+      .section-card h2 { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="floating-stars" aria-hidden="true" id="floatingStars"></div>
+  <script>
+    const container = document.getElementById('floatingStars');
+    const symbols = ['✦','✧','⋆','★','✦','✧','⋆'];
+    for (let i = 0; i < 40; i++) {
+      const s = document.createElement('span');
+      s.className = 'fstar';
+      s.textContent = symbols[i % symbols.length];
+      s.style.left = (Math.random() * 98) + '%';
+      s.style.top  = (Math.random() * 98) + '%';
+      s.style.setProperty('--op',   (0.08 + Math.random() * 0.18).toFixed(2));
+      s.style.setProperty('--size', (0.55 + Math.random() * 0.7) + 'rem');
+      container.appendChild(s);
+    }
+  </script>
+
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="/">
+        <img class="brand-logo" src="logo.png" alt="Auntie Ona">
+        <span class="brand-name">Auntie Ona</span>
+      </a>
+      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/learn-your-sounds">Learn Your Sounds</a></li>
+          <li><a href="/learn-your-numbers">Learn Your Numbers</a></li>
+          <li><a href="/fine-motor" class="active">Fine Motor</a></li>
+            <li><a href="/about">About & Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="hero-banner">
+    <img src="banner-finemotor.png" alt="Fine Motor & Mark Making with Auntie Ona" />
+  </div>
+
+  <div class="intro-strip">
+    <p>Before children can write, they need strong hands, steady fingers and the confidence to make marks. Here you'll find Auntie Ona's videos to help little ones build those all-important fine motor skills — through play, creativity and lots of fun. ✏️🤎</p>
+  </div>
+
+  <main class="page-body">
+
+    <!-- MARK MAKING -->
+    <div class="section-card">
+      <span class="section-badge badge-pink">Prewriting & Mark Making</span>
+      <h2>Making marks, making writers</h2>
+      <div class="section-rule rule-pink"></div>
+      <p>Before children learn to form letters, they need plenty of experience making marks — lines, circles, zigzags, patterns. This kind of free, exploratory mark making builds the pencil control and hand-eye coordination that writing depends on.</p>
+      <p>There are so many wonderful ways to mark make — chalk on the ground, painting with water, drawing in sand, using crayons or felt tips on big sheets of paper. The key is keeping it playful and pressure-free. Children who enjoy making marks become children who enjoy writing!</p>
+
+      <div class="tip-box">
+        <p>💡 <strong>Top tip:</strong> Big movements first! Encourage large arm movements on big paper before moving to smaller pencil work. This builds shoulder and arm strength as well as finger control.</p>
+      </div>
+
+      <div style="background:#f5f0e8; border-radius:14px; padding:1.1rem 1.4rem; margin-top:1rem;">
+        <p style="font-size:10px; font-weight:800; letter-spacing:2.5px; text-transform:uppercase; color:#9a7850; margin-bottom:0.75rem;">Mark Making Video</p>
+        <span class="coming-soon">✦ Coming soon</span>
+        <p class="video-caption" style="text-align:left; margin-top:0.5rem;">Auntie Ona will be adding a mark making video soon — showing examples of lines, patterns and marks to try at home!</p>
+      </div>
+    </div>
+
+    <!-- WRITING FIRST SOUNDS -->
+    <div class="section-card">
+      <span class="section-badge badge-pink">Writing Your First Sounds</span>
+      <h2>From sounds to letters</h2>
+      <div class="section-rule rule-pink"></div>
+      <p>Once children are confident making marks, they're ready to start forming their first letter sounds. This video with Auntie Ona guides little ones through writing the sounds they've been learning — a brilliant bridge between phonics and handwriting.</p>
+
+      <div class="tip-box">
+        <p>💡 <strong>Top tip:</strong> Watch the video together and pause to practise each sound before moving on. Little and often is the key!</p>
+      </div>
+
+      <div class="video-embed">
+        <iframe
+          src="https://www.youtube.com/embed/0t0He5E3nlU"
+          title="Writing Your First Sounds with Auntie Ona"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+      <p class="video-caption">Writing Your First Sounds with Auntie Ona 🖊️</p>
+      <div style="text-align:center; margin-top: 0.75rem;">
+        <a href="https://youtu.be/0t0He5E3nlU" target="_blank" class="btn-resources" style="font-size:0.82rem; padding: 9px 22px;">▶ Watch on YouTube</a>
+      </div>
+    </div>
+
+    <!-- PLAY DOH -->
+    <div class="section-card">
+      <span class="section-badge badge-purple">Hand Strength & Play</span>
+      <h2>Play dough: the secret superpower</h2>
+      <div class="section-rule rule-purple"></div>
+      <p>Play dough might look like just fun — and it is! — but it's also one of the very best ways to build the hand and finger strength children need for writing. Squeezing, rolling, pinching and poking all work those tiny muscles in ways that transfer directly to holding a pencil.</p>
+      <p>You don't need anything fancy. Whether it's shop-bought or homemade, a good session with play dough a few times a week can make a real difference to a child's grip strength and control. Watch Auntie Ona make a play dough dinosaur and have a go together!</p>
+
+      <div class="tip-box">
+        <p>💡 <strong>Top tip:</strong> Try hiding small objects inside a ball of play dough and asking your child to find them using just their fingers — a brilliant (and sneaky!) strengthening exercise.</p>
+      </div>
+
+      <div class="video-embed">
+        <iframe
+          src="https://www.youtube.com/embed/PZX6X6Bn9cY"
+          title="Make a Play Dough Dinosaur with Auntie Ona"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+      <p class="video-caption">Make a Play Dough Dinosaur with Auntie Ona 🦕</p>
+      <div style="text-align:center; margin-top: 0.75rem;">
+        <a href="https://youtu.be/PZX6X6Bn9cY" target="_blank" class="btn-resources" style="font-size:0.82rem; padding: 9px 22px;">▶ Watch on YouTube</a>
+      </div>
+    </div>
+
+    <!-- NEWSLETTER -->
+    <div class="resources-strip">
+      <h3>Keep the fun going! ✏️</h3>
+      <p>Sign up to Auntie Ona's newsletter and get ideas, activities and inspiration for keeping little hands busy — straight to your inbox. 🤎</p>
+      <a href="/#signup" class="btn-resources">Join the Auntie Ona family →</a>
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <img class="footer-logo" src="logo.png" alt="Auntie Ona" />
+      <p class="footer-tagline">Auntie Ona & Zeb make learning fun 🦓🤎</p>
+      <ul class="footer-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/learn-your-sounds">Learn Your Sounds</a></li>
+        <li><a href="/learn-your-numbers">Learn Your Numbers</a></li>
+        <li><a href="/fine-motor">Fine Motor</a></li>
+        <li><a href="/about">About & Contact</a></li>
+      </ul>
+      <p class="footer-copy">© <span id="year"></span> Auntie Ona · Made with 🤎 for little learners everywhere</p>
+      <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+    </div>
+  </footer>
+
+  <script>
+    // Hamburger menu toggle
+    document.querySelector('.nav-toggle').addEventListener('click', function () {
+      const open = document.querySelector('.nav-links').classList.toggle('open');
+      this.setAttribute('aria-expanded', open);
+    });
+  </script>
+
+</body>
+</html>

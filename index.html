@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Auntie Ona — Fun Learning for Little Ones</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --beige:      #F7F2E8;
+      --cream:      #F7F0E6;
+      --warm-white: #FDF8F2;
+      --brown:      #8E6350;
+      --brown-mid:  #7A5240;
+      --brown-light:#B8906E;
+      --gold:       #C9993A;
+      --gold-light: #E8C87A;
+      --muted:      #8A6F5A;
+      --border:     rgba(92,61,42,0.14);
+      --shadow:     0 8px 32px rgba(92,61,42,0.12);
+      --radius:     20px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--beige);
+      color: var(--brown);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Fairy lights decoration ── */
+    .fairy-lights {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 6px;
+      background: linear-gradient(90deg,
+        transparent 0%, var(--gold-light) 10%, transparent 20%,
+        var(--gold) 30%, transparent 40%,
+        var(--gold-light) 50%, transparent 60%,
+        var(--gold) 70%, transparent 80%,
+        var(--gold-light) 90%, transparent 100%);
+      z-index: 1000;
+      animation: shimmer 3s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+
+    /* ── Nav ── */
+    .site-header {
+      position: sticky;
+      top: 6px;
+      z-index: 900;
+      background: rgba(251,247,240,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--gold-light);
+    }
+
+    .brand-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--brown);
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 999px;
+      transition: all 0.2s;
+    }
+
+    .nav-links a:hover {
+      background: rgba(92,61,42,0.08);
+      color: var(--brown);
+    }
+
+    .nav-links a.active {
+      background: var(--brown);
+      color: var(--cream);
+    }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      min-height: 92vh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('hero.jpeg');
+      background-size: cover;
+      background-position: center top;
+      filter: brightness(0.55);
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(92,61,42,0.65) 0%,
+        rgba(92,61,42,0.2) 60%,
+        transparent 100%
+      );
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 80px 24px 60px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+      width: 100%;
+    }
+
+    .hero-text {
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 999px;
+      padding: 6px 16px;
+      font-size: 0.85rem;
+      color: var(--gold-light);
+      font-weight: 600;
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      color: #FFFDF9;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .hero-subtitle {
+      font-size: 1.05rem;
+      color: rgba(255,253,249,0.85);
+      max-width: 44ch;
+      margin-bottom: 32px;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 24px;
+      border-radius: 999px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--gold);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(201,153,58,0.4);
+    }
+
+    .btn-primary:hover {
+      background: var(--brown);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(92,61,42,0.3);
+    }
+
+    .btn-ghost {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+      color: #FFFDF9;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(255,255,255,0.25);
+      transform: translateY(-2px);
+    }
+
+    .btn-brown {
+      background: var(--brown);
+      color: var(--cream);
+    }
+
+    .btn-brown:hover {
+      background: var(--brown-mid);
+      transform: translateY(-2px);
+    }
+
+    /* Hero card */
+    .hero-card {
+      background: rgba(251,247,240,0.12);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: var(--radius);
+      padding: 32px;
+      animation: fadeUp 0.8s 0.2s ease both;
+    }
+
+    .hero-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: #FFFDF9;
+      margin-bottom: 8px;
+    }
+
+    .hero-card p {
+      color: rgba(255,253,249,0.8);
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .signup-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .signup-form input {
+      padding: 13px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.15);
+      color: #FFFDF9;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .signup-form input::placeholder { color: rgba(255,253,249,0.55); }
+    .signup-form input:focus { background: rgba(255,255,255,0.22); border-color: var(--gold-light); }
+
+    /* ── Section commons ── */
+    .section {
+      padding: 70px 24px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      color: var(--brown);
+      margin-bottom: 14px;
+      line-height: 1.2;
+    }
+
+    .section-subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 54ch;
+      line-height: 1.7;
+      margin-bottom: 40px;
+    }
+
+    /* ── Welcome strip ── */
+    .welcome-strip {
+      background: var(--cream);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 24px;
+      text-align: center;
+    }
+
+    .welcome-strip p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    .welcome-strip span { color: var(--gold); }
+
+    /* ── About section ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      align-items: center;
+    }
+
+    .about-image-wrap {
+      position: relative;
+    }
+
+    .about-image {
+      width: 100%;
+      border-radius: var(--radius);
+      display: block;
+      box-shadow: var(--shadow);
+    }
+
+    .about-image-badge {
+      position: absolute;
+      bottom: -16px;
+      right: -16px;
+      background: var(--gold);
+      color: white;
+      border-radius: 16px;
+      padding: 14px 20px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      box-shadow: 0 4px 16px rgba(201,153,58,0.35);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .about-text h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      color: var(--brown);
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .about-text p {
+      color: var(--muted);
+      margin-bottom: 16px;
+      line-height: 1.8;
+    }
+
+    .about-checks {
+      list-style: none;
+      margin: 20px 0 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .about-checks li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      color: var(--brown);
+      font-size: 0.95rem;
+    }
+
+    .check-icon {
+      width: 22px;
+      height: 22px;
+      background: var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: white;
+      font-size: 0.7rem;
+    }
+
+    /* ── Learning sections grid ── */
+    .learn-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .learn-card {
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      box-shadow: var(--shadow);
+      transition: all 0.25s;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .learn-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(92,61,42,0.14);
+    }
+
+    .learn-icon {
+      font-size: 2.4rem;
+      line-height: 1;
+    }
+
+    .learn-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      color: var(--brown);
+    }
+
+    .learn-card p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .learn-link {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ── YouTube section ── */
+    .youtube-section {
+      background: var(--brown);
+      padding: 70px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .youtube-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(201,153,58,0.15) 0%, transparent 60%);
+    }
+
+    .youtube-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .youtube-text .section-label { color: var(--gold-light); }
+
+    .youtube-text h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      color: #FFFDF9;
+      margin-bottom: 14px;
+      line-height: 1.2;
+    }
+
+    .youtube-text p {
+      color: rgba(255,253,249,0.75);
+      margin-bottom: 28px;
+      line-height: 1.8;
+    }
+
+    .youtube-preview {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .yt-thumb-link {
+      position: relative;
+      display: block;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .yt-thumb-img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      display: block;
+      border-radius: 12px;
+      transition: filter 0.2s;
+    }
+
+    .yt-thumb-link:hover .yt-thumb-img {
+      filter: brightness(0.85);
+    }
+
+    .yt-play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 64px;
+      height: 64px;
+      background: rgba(255,0,0,0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: white;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      transition: transform 0.2s;
+    }
+
+    .yt-thumb-link:hover .yt-play-btn {
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    /* ── Signup section ── */
+    .signup-section {
+      background: linear-gradient(135deg, var(--cream) 0%, var(--beige) 100%);
+      padding: 70px 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .signup-inner {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .signup-inner h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3vw, 2.2rem);
+      color: var(--brown);
+      margin-bottom: 12px;
+    }
+
+    .signup-inner p {
+      color: var(--muted);
+      margin-bottom: 28px;
+      line-height: 1.7;
+    }
+
+    .signup-row {
+      display: flex;
+      gap: 10px;
+      max-width: 460px;
+      margin: 0 auto;
+    }
+
+    .signup-row input {
+      flex: 1;
+      padding: 14px 20px;
+      border-radius: 999px;
+      border: 1.5px solid var(--border);
+      background: white;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      color: var(--brown);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .signup-row input:focus { border-color: var(--gold); }
+    .signup-row input::placeholder { color: var(--brown-light); }
+
+    .signup-note {
+      margin-top: 12px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* Banners */
+    .banners-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .banner-card {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius);
+      padding: 32px 20px;
+      text-decoration: none;
+      box-shadow: var(--shadow);
+      transition: all 0.25s;
+      min-height: 140px;
+    }
+
+    .banner-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(92,61,42,0.18);
+    }
+
+    .banner-card-text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      text-align: center;
+    }
+
+    .banner-card-title {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: white;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      line-height: 1.2;
+    }
+
+    .banner-card-sub {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.85);
+    }
+
+    .banner-card-link {
+      margin-top: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: white;
+      background: rgba(255,255,255,0.25);
+      padding: 6px 16px;
+      border-radius: 999px;
+    }
+
+    .banner-link {
+      position: relative;
+      display: block;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: transform 0.25s;
+    }
+
+    .banner-link:hover {
+      transform: translateY(-4px);
+    }
+
+    .banner-img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .banner-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(92,61,42,0.75));
+      padding: 16px;
+      text-align: center;
+    }
+
+    .banner-overlay span {
+      color: white;
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 0.3px;
+    }
+
+    @media (max-width: 768px) {
+      .banners-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--brown);
+      color: rgba(255,253,249,0.7);
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .footer-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      display: block;
+      border: 2px solid rgba(255,255,255,0.15);
+    }
+
+    .footer-tagline {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: rgba(255,253,249,0.9);
+      margin-bottom: 16px;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .footer-links a {
+      color: rgba(255,253,249,0.6);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--gold-light); }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: rgba(255,253,249,0.4);
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Hamburger button ── */
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 10px;
+      transition: background 0.2s;
+    }
+    .nav-toggle:hover { background: rgba(142,99,80,0.1); }
+    .nav-toggle span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--brown);
+      border-radius: 2px;
+      transition: all 0.25s;
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      .hero-content { grid-template-columns: 1fr; }
+      .hero-card { display: none; }
+      .about-grid { grid-template-columns: 1fr; }
+      .about-image-badge { bottom: 12px; right: 12px; }
+      .learn-grid { grid-template-columns: 1fr; }
+      .youtube-inner { grid-template-columns: 1fr; }
+      .signup-row { flex-direction: column; }
+
+      .nav-toggle { display: flex; }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        background: rgba(251,247,240,0.97);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        padding: 12px 20px 20px;
+        gap: 4px;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a {
+        width: 100%;
+        border-radius: 12px;
+        padding: 12px 16px;
+      }
+
+      .site-header { position: sticky; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-title { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fairy lights bar -->
+  <div class="fairy-lights"></div>
+
+  <!-- Nav -->
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="/">
+        <img class="brand-logo" src="logo.png" alt="Auntie Ona">
+        <span class="brand-name">Auntie Ona</span>
+      </a>
+      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="nav-links">
+        <a href="/" class="active">Home</a>
+        <a href="/learn-your-sounds">Learn Your Sounds</a>
+        <a href="/learn-your-numbers">Learn Your Numbers</a>
+        <a href="/fine-motor">Fine Motor</a>
+        <a href="/about">About & Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">
+          Welcome to<br><em>Auntie Ona</em> ✨
+        </h1>
+        <p class="hero-subtitle">
+          Fun, engaging learning videos for children aged 3–7.
+          Supporting early phonics, numbers and key skills —
+          right from the comfort of home. 🤎
+        </p>
+        <div class="hero-actions">
+          <a href="https://www.youtube.com/@auntie_ona" target="_blank" class="btn btn-primary">
+            ▶ Watch on YouTube
+          </a>
+          <a href="/contact" class="btn btn-ghost">
+            Get in touch
+          </a>
+        </div>
+      </div>
+
+      <!-- Signup card -->
+      <div class="hero-card">
+        <h3>🤎 Join the Auntie Ona family</h3>
+        <p>Get new video alerts and easy activity ideas straight to your inbox.</p>
+        <form class="signup-form" method="post" onsubmit="return handleSignup(this, event)">
+          <input type="text" name="fields[name]" placeholder="Your first name" />
+          <input type="email" name="fields[email]" placeholder="Your email address" required />
+          <input type="hidden" name="ml-submit" value="1">
+          <input type="hidden" name="anticsrf" value="true">
+          <button type="submit" class="btn btn-primary">Join for free ✨</button>
+          <p class="form-message" style="display:none; color:var(--gold-light); font-size:0.9rem; text-align:center;"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="section" style="background: var(--cream);">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-image-wrap">
+          <img class="about-image" src="hero.jpeg" alt="Auntie Ona with Zeb" />
+          <div class="about-image-badge">
+            🎉 1,000+ YouTube<br>subscribers & growing!
+          </div>
+        </div>
+        <div class="about-text">
+          <p class="section-label"></p>
+          <h2>Come and meet<br>Auntie Ona & Zeb 🦓</h2>
+          <p>
+            Auntie Ona creates fun, warm, engaging learning videos for little ones aged 3–7,
+            supporting early reading, phonics, numbers and fine motor skills.
+          </p>
+          <p>
+            Everything is designed to be easy to follow at home — 
+            no teaching experience needed. Just warm up the sofa, open a video, 
+            and let Auntie Ona & Zeb take your child on a learning adventure.
+          </p>
+          <ul class="about-checks">
+            <li><span class="check-icon">✓</span> Free YouTube videos every week</li>
+            <li><span class="check-icon">✓</span> Phonics, maths, fine motor & more</li>
+            <li><span class="check-icon">✓</span> Designed for home & classroom</li>
+          </ul>
+          <a href="https://www.youtube.com/@auntie_ona" target="_blank" class="btn btn-brown">
+            ▶ Watch free videos
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- YouTube section -->
+  <section class="youtube-section">
+    <div class="youtube-inner">
+      <div class="youtube-text">
+        <p class="section-label">Free on YouTube</p>
+        <h2>New videos every week 🎬</h2>
+        <p>
+          All of our videos are completely free on YouTube.
+          Subscribe so you never miss a new lesson — Zeb is very excited about the next one! 🦓
+        </p>
+        <a href="https://www.youtube.com/@auntie_ona" target="_blank" class="btn btn-primary">
+          ▶ Visit our YouTube channel
+        </a>
+      </div>
+      <div class="youtube-preview">
+        <div style="border-radius:12px; overflow:hidden; aspect-ratio:16/9; background:#000;">
+          <iframe width="100%" height="100%" src="https://www.youtube.com/embed/2IErBFz1G3w" title="Learn the S sound with Auntie Ona" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="display:block;"></iframe>
+        </div>
+        <div class="yt-cta" style="color:#FFFDF9; font-weight:700;">Ready to start learning sounds? Begin your journey here with the /s/ sound 🦓</div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <a href="https://www.youtube.com/watch?v=2IErBFz1G3w" target="_blank" class="btn btn-primary" style="align-self: flex-start;">
+            ▶ Watch on YouTube
+          </a>
+          <a href="https://www.youtube.com/@auntie_ona" target="_blank" class="btn btn-primary" style="align-self: flex-start;">
+            Visit our channel
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Explore section -->
+  <section class="section" style="background: var(--cream);">
+    <div class="container">
+      <h2 class="section-title" style="text-align:center;">Explore Auntie Ona's world</h2>
+      <h3 style="text-align:center; font-family:'Playfair Display',serif; font-size:1.6rem; color:var(--brown-mid); font-weight:400; margin-bottom:32px;">Where would you like to start? 🤎</h3>
+      <div class="banners-grid">
+        <a href="/learn-your-sounds" class="banner-card" style="background: linear-gradient(135deg, #5BC8C8, #3A9EAD);">
+          <div class="banner-card-text">
+            <span class="banner-card-title">Learn Your Sounds</span>
+            <span class="banner-card-sub">with Auntie Ona</span>
+            <span class="banner-card-link">Explore Sounds →</span>
+          </div>
+        </a>
+        <a href="/learn-your-numbers" class="banner-card" style="background: linear-gradient(135deg, #7EC8E3, #C850C0);">
+          <div class="banner-card-text">
+            <span class="banner-card-title">Learn Your Numbers</span>
+            <span class="banner-card-sub">with Auntie Ona</span>
+            <span class="banner-card-link">Explore Numbers →</span>
+          </div>
+        </a>
+        <a href="/fine-motor" class="banner-card" style="background: linear-gradient(135deg, #FFB7C5, #FF8FAB);">
+          <div class="banner-card-text">
+            <span class="banner-card-title">Fine Motor</span>
+            <span class="banner-card-sub">with Auntie Ona</span>
+            <span class="banner-card-link">Explore Fine Motor →</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Email signup -->
+  <section class="signup-section" id="signup">
+    <div class="signup-inner">
+      <p class="section-label" style="text-align:center;">Stay in the loop</p>
+      <h2>Join the Auntie Ona family 🤎</h2>
+      <p>Get new video alerts and easy ideas for learning at home — straight to your inbox.</p>
+      <form method="post" onsubmit="return handleSignup(this, event)">
+        <div class="signup-row">
+          <input type="email" name="fields[email]" placeholder="Your email address" required />
+          <button type="submit" class="btn btn-brown">Join free ✨</button>
+        </div>
+        <input type="hidden" name="ml-submit" value="1">
+        <input type="hidden" name="anticsrf" value="true">
+        <p class="form-message" style="display:none; margin-top:12px; font-size:0.9rem; color:var(--brown);"></p>
+      </form>
+      <p class="signup-note">🔒 Your details are safe. Unsubscribe any time.</p>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <img class="footer-logo" src="logo.png" alt="Auntie Ona" />
+      <p class="footer-tagline">Auntie Ona & Zeb make learning fun 🦓🤎</p>
+      <nav class="footer-links">
+        <a href="/">Home</a>
+        <a href="/learn-your-sounds">Learn Your Sounds</a>
+        <a href="/learn-your-numbers">Learn Your Numbers</a>
+        <a href="/fine-motor">Fine Motor</a>
+        <a href="/about">About & Contact</a>
+      </nav>
+      <p class="footer-copy">© <span id="year"></span> Auntie Ona · Made with 🤎 for little learners everywhere</p>
+      <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+    </div>
+  </footer>
+
+  <script>
+    // Hamburger menu toggle
+    const toggle = document.querySelector('.nav-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    toggle.addEventListener('click', function () {
+      const open = navLinks.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open);
+    });
+
+    // Submit to MailerLite and show a success message
+    function handleSignup(form, e) {
+      e.preventDefault();
+      const data = new FormData(form);
+      fetch('https://assets.mailerlite.com/jsonp/2081403/forms/178261146856326985/subscribe', {
+        method: 'POST',
+        body: data,
+        mode: 'no-cors'
+      }).finally(function () {
+        const msg = form.querySelector('.form-message');
+        msg.style.display = 'block';
+        msg.textContent = 'Thanks for signing up! We\'ll be in touch soon. 🤎';
+        form.querySelectorAll('input[type="email"], input[type="text"]').forEach(function (el) { el.value = ''; });
+      });
+      return false;
+    }
+  </script>
+</body>
+</html>
