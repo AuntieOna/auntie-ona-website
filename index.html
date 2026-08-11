@@ -297,9 +297,37 @@
     .signup-stickers-preview {
       display: block;
       width: 100%;
-      max-width: 240px;
+      max-width: 320px;
       margin: 0 auto 18px;
+    }
+
+    .signup-gift-badge {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--gold);
+      margin-bottom: 14px;
+    }
+
+    .hero-card .signup-gift-badge { color: var(--gold-light); }
+
+    .signup-confirm-note {
+      margin-top: 14px;
+      padding: 12px 16px;
       border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      text-align: center;
+      background: rgba(201,153,58,0.12);
+      border: 1px solid var(--gold-light);
+      color: var(--brown-mid);
+    }
+
+    .hero-card .signup-confirm-note {
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.35);
+      color: #FFFDF9;
     }
 
     .signup-form {
@@ -927,8 +955,9 @@
       <!-- Signup card -->
       <div class="hero-card">
         <h3>🤎 Join the Auntie Ona family</h3>
-        <p>Get new video alerts and easy activity ideas straight to your inbox — plus a free Phonics Tracker &amp; stickers when you join. 🎁</p>
-        <img src="phonics-tracker-stickers-preview.png" alt="Auntie Ona reward stickers" class="signup-stickers-preview" />
+        <p>Get new video alerts and easy activity ideas straight to your inbox.</p>
+        <p class="signup-gift-badge">🎁 FREE Phonics Tracker &amp; Stickers</p>
+        <img src="phonics-tracker-fan-preview.png" alt="Preview of the free Phonics Tracker pack — instructions, tracker and sticker sheet" class="signup-stickers-preview" />
         <form class="signup-form" method="post" onsubmit="return handleSignup(this, event)">
           <input type="text" name="fields[name]" placeholder="Your first name" />
           <input type="email" name="fields[email]" placeholder="Your email address" required />
@@ -937,7 +966,7 @@
           <button type="submit" class="btn btn-primary">Join for free ✨</button>
           <p class="form-message" style="display:none; color:var(--gold-light); font-size:0.9rem; text-align:center;"></p>
         </form>
-        <p style="margin-top:12px; font-size:0.8rem; color:rgba(255,253,249,0.65); text-align:center; line-height:1.5;">📬 Check your inbox (or junk folder) to confirm your email address.</p>
+        <p class="signup-confirm-note">📬 Don't forget to check your inbox (or junk folder!) to confirm your email address.</p>
       </div>
     </div>
   </section>
@@ -1044,8 +1073,9 @@
     <div class="signup-inner">
       <p class="section-label" style="text-align:center;">Stay in the loop</p>
       <h2>Join the Auntie Ona family 🤎</h2>
-      <p>Get new video alerts and easy ideas for learning at home — plus a free Phonics Tracker &amp; stickers when you join. 🎁</p>
-      <img src="phonics-tracker-stickers-preview.png" alt="Auntie Ona reward stickers" class="signup-stickers-preview" />
+      <p>Get new video alerts and easy ideas for learning at home — straight to your inbox.</p>
+      <p class="signup-gift-badge">🎁 FREE Phonics Tracker &amp; Stickers</p>
+      <img src="phonics-tracker-fan-preview.png" alt="Preview of the free Phonics Tracker pack — instructions, tracker and sticker sheet" class="signup-stickers-preview" />
       <form method="post" onsubmit="return handleSignup(this, event)">
         <div class="signup-row">
           <input type="email" name="fields[email]" placeholder="Your email address" required />
@@ -1055,8 +1085,8 @@
         <input type="hidden" name="anticsrf" value="true">
         <p class="form-message" style="display:none; margin-top:12px; font-size:0.9rem; color:var(--brown);"></p>
       </form>
-      <p class="signup-note">📬 Check your inbox (or junk folder) to confirm your email address.</p>
-      <p class="signup-note" style="margin-top:4px;">🔒 Your details are safe. Unsubscribe any time.</p>
+      <p class="signup-confirm-note">📬 Don't forget to check your inbox (or junk folder!) to confirm your email address.</p>
+      <p class="signup-note" style="margin-top:8px;">🔒 Your details are safe. Unsubscribe any time.</p>
 
     </div>
   </section>
