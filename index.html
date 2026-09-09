@@ -318,25 +318,6 @@
       font-weight: 900;
     }
 
-    .signup-confirm-note {
-      margin-top: 14px;
-      padding: 12px 16px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      line-height: 1.5;
-      text-align: center;
-      background: rgba(201,153,58,0.12);
-      border: 1px solid var(--gold-light);
-      color: var(--brown-mid);
-    }
-
-    .hero-card .signup-confirm-note {
-      background: rgba(255,255,255,0.14);
-      border: 1px solid rgba(255,255,255,0.35);
-      color: #FFFDF9;
-    }
-
     .form-message {
       margin-top: 12px;
       padding: 12px 16px;
@@ -710,6 +691,57 @@
       color: var(--muted);
     }
 
+    .signup-note a { color: var(--brown-mid); }
+
+    .hero-card .signup-note {
+      color: rgba(255,253,249,0.75);
+    }
+
+    .hero-card .signup-note a {
+      color: #FFFDF9;
+    }
+
+    .consent-check {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      text-align: left;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      color: var(--muted);
+      margin: 10px 0;
+      cursor: pointer;
+    }
+
+    .consent-check input {
+      margin-top: 2px;
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+      accent-color: var(--brown);
+      cursor: pointer;
+    }
+
+    .consent-check a { color: var(--brown-mid); }
+
+    .hero-card .consent-check {
+      color: rgba(255,253,249,0.85);
+    }
+
+    .hero-card .consent-check a {
+      color: #FFFDF9;
+    }
+
+    .hero-card .consent-check input {
+      accent-color: var(--gold-light);
+    }
+
+    .signup-row + .consent-check {
+      max-width: 460px;
+      margin: 10px auto;
+      justify-content: center;
+    }
+
     /* Banners */
     .banners-grid {
       display: grid;
@@ -982,18 +1014,21 @@
       <!-- Signup card -->
       <div class="hero-card">
         <h3>🤎 Join the Auntie Ona family</h3>
-        <p>Get new video alerts and easy activity ideas straight to your inbox.</p>
-        <p class="signup-gift-badge">🎁 Sign up &amp; get a FREE Phonics Tracker + Stickers</p>
+        <p>Get simple phonics and maths tips, helpful resources, activity ideas and new video updates straight to your inbox.</p>
+        <p class="signup-gift-badge">🎁 Sign up to our newsletter and get a FREE Phonics Tracker + Stickers</p>
         <img src="phonics-tracker-fan-preview.png" alt="Preview of the free Phonics Tracker pack — instructions, tracker and sticker sheet" class="signup-stickers-preview" />
         <form class="signup-form" method="post" onsubmit="return handleSignup(this, event)">
           <input type="text" name="fields[name]" placeholder="Your first name" />
           <input type="email" name="fields[email]" placeholder="Your email address" required />
+          <label class="consent-check">
+            <input type="checkbox" name="gdpr[]" value="Email" required />
+            <span>Sign me up for my free Phonics Tracker + stickers and the Auntie Ona newsletter. I agree to the <a href="/privacy">Privacy Policy</a>.</span>
+          </label>
           <input type="hidden" name="ml-submit" value="1">
           <input type="hidden" name="anticsrf" value="true">
           <button type="submit" class="btn btn-primary">Join for free ✨</button>
           <p class="form-message" style="display:none;"></p>
         </form>
-        <p class="signup-confirm-note">📬 Don't forget to check your inbox (or junk folder!) to confirm your email address.</p>
       </div>
     </div>
   </section>
@@ -1100,20 +1135,23 @@
     <div class="signup-inner">
       <p class="section-label" style="text-align:center;">Stay in the loop</p>
       <h2>Join the Auntie Ona family 🤎</h2>
-      <p>Get new video alerts and easy ideas for learning at home — straight to your inbox.</p>
-      <p class="signup-gift-badge">🎁 Sign up &amp; get a FREE Phonics Tracker + Stickers</p>
+      <p>Get simple phonics and maths tips, helpful resources, activity ideas and new video updates straight to your inbox.</p>
+      <p class="signup-gift-badge">🎁 Sign up to our newsletter and get a FREE Phonics Tracker + Stickers</p>
       <img src="phonics-tracker-fan-preview.png" alt="Preview of the free Phonics Tracker pack — instructions, tracker and sticker sheet" class="signup-stickers-preview" />
       <form method="post" onsubmit="return handleSignup(this, event)">
         <div class="signup-row">
           <input type="email" name="fields[email]" placeholder="Your email address" required />
           <button type="submit" class="btn btn-brown">Join free ✨</button>
         </div>
+        <label class="consent-check">
+          <input type="checkbox" name="gdpr[]" value="Email" required />
+          <span>Sign me up for my free Phonics Tracker + stickers and the Auntie Ona newsletter. I agree to the <a href="/privacy">Privacy Policy</a>.</span>
+        </label>
         <input type="hidden" name="ml-submit" value="1">
         <input type="hidden" name="anticsrf" value="true">
         <p class="form-message" style="display:none;"></p>
       </form>
-      <p class="signup-confirm-note">📬 Don't forget to check your inbox (or junk folder!) to confirm your email address.</p>
-      <p class="signup-note" style="margin-top:8px;">🔒 Your details are safe. Unsubscribe any time.</p>
+      <p class="signup-note">🔒 Your details are safe. Unsubscribe any time.</p>
 
     </div>
   </section>
@@ -1145,22 +1183,26 @@
       toggle.setAttribute('aria-expanded', open);
     });
 
-    // Submit to MailerLite and show a success message
+    // Submit to MailerLite (single opt-in is now set on the form itself) and show the result
     function handleSignup(form, e) {
       e.preventDefault();
       const data = new FormData(form);
+      const msg = form.querySelector('.form-message');
+
       fetch('https://assets.mailerlite.com/jsonp/2081403/forms/178261146856326985/subscribe', {
         method: 'POST',
         body: data,
         mode: 'no-cors'
-      }).finally(function () {
-        const msg = form.querySelector('.form-message');
-        msg.style.display = 'block';
-        msg.innerHTML = 'Thank you for signing up! Almost there ✨<br>Check your inbox and click the confirmation link to join the Auntie Ona newsletter and receive your FREE Phonics Tracker.<br>Can\'t see it? Check your junk/spam folder too.';
-        const note = form.parentElement.querySelector('.signup-confirm-note');
-        if (note) note.style.display = 'none';
-        form.querySelectorAll('input[type="email"], input[type="text"]').forEach(function (el) { el.value = ''; });
-      });
+      })
+        .then(function () {
+          msg.style.display = 'block';
+          msg.innerHTML = 'You\'re in! 🎉 Your free Phonics Tracker + stickers are on their way to your inbox now — check your spam/promotions folder too, just in case.';
+          form.querySelectorAll('input[type="email"], input[type="text"]').forEach(function (el) { el.value = ''; });
+        })
+        .catch(function () {
+          msg.style.display = 'block';
+          msg.innerHTML = 'Hmm, something went wrong — please try again, or email <a href="mailto:hello@auntieona.com">hello@auntieona.com</a> and I\'ll send it over.';
+        });
       return false;
     }
   </script>

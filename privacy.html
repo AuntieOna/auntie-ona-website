@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-67RZFZMGKT"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-67RZFZMGKT');
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — Auntie Ona</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --beige:       #F5EFE4;
+      --cream:       #FBF7F0;
+      --warm-white:  #FFFDF9;
+      --brown:       #8E6350;
+      --brown-mid:   #7A5240;
+      --brown-light: #B8906E;
+      --gold:        #C9993A;
+      --gold-light:  #E8C87A;
+      --muted:       #8A6F5A;
+      --border:      rgba(92,61,42,0.12);
+      --radius:      20px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--beige);
+      color: var(--brown);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Static background stars ── */
+    .floating-stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .floating-stars .fstar {
+      position: absolute;
+      color: var(--gold);
+      user-select: none;
+      opacity: var(--op, 0.18);
+      font-size: var(--size, 0.8rem);
+    }
+
+    .site-header, .page-body, footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Nav ── */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background: rgba(251,247,240,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--gold-light);
+    }
+
+    .brand-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--brown);
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 999px;
+      transition: all 0.2s;
+    }
+
+    .nav-links a:hover {
+      background: rgba(92,61,42,0.08);
+      color: var(--brown);
+    }
+
+    .nav-links a.active {
+      background: var(--brown);
+      color: var(--cream);
+    }
+
+    /* ── Hamburger button ── */
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 10px;
+      transition: background 0.2s;
+    }
+    .nav-toggle:hover { background: rgba(142,99,80,0.1); }
+    .nav-toggle span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--brown);
+      border-radius: 2px;
+    }
+
+    @media (max-width: 768px) {
+      .nav-toggle { display: flex; }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        background: rgba(251,247,240,0.97);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        padding: 12px 20px 20px;
+        gap: 4px;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links li { list-style: none; }
+      .nav-links a {
+        display: block;
+        width: 100%;
+        border-radius: 12px;
+        padding: 12px 16px;
+      }
+    }
+
+    /* ── Page body ── */
+    .page-body {
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 3.5rem 1.5rem 5rem;
+    }
+
+    /* ── Page title ── */
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 5vw, 3rem);
+      color: var(--brown);
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+    }
+
+    .page-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .page-intro {
+      font-size: 0.97rem;
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 2.5rem;
+      max-width: 54ch;
+    }
+
+    /* ── Policy card ── */
+    .about-card {
+      background: var(--warm-white);
+      border: 1.5px solid #e8d8c0;
+      border-radius: var(--radius);
+      padding: 2rem 2rem 1.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .about-card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--brown);
+      line-height: 1.2;
+      margin: 1.5rem 0 0.75rem;
+      letter-spacing: -0.3px;
+    }
+
+    .about-card h2:first-child { margin-top: 0; }
+
+    .section-rule {
+      height: 2px;
+      width: 44px;
+      border-radius: 2px;
+      background: var(--gold);
+      margin-bottom: 1.25rem;
+    }
+
+    .about-card p, .about-card li {
+      font-size: 0.94rem;
+      color: #5a4030;
+      line-height: 1.8;
+      margin-bottom: 1rem;
+    }
+
+    .about-card ul {
+      margin: 0 0 1rem 1.25rem;
+    }
+
+    .about-card p:last-child, .about-card li:last-child { margin-bottom: 0; }
+
+    .about-card a { color: var(--brown); }
+    .about-card a:hover { color: var(--gold); }
+
+    .policy-updated {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--brown);
+      color: rgba(255,253,249,0.7);
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    .footer-inner { max-width: 1100px; margin: 0 auto; }
+
+    .footer-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      display: block;
+      border: 2px solid rgba(255,255,255,0.15);
+    }
+
+    .footer-tagline {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: rgba(255,253,249,0.9);
+      margin-bottom: 16px;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: rgba(255,253,249,0.6);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--gold-light); }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: rgba(255,253,249,0.4);
+    }
+
+    @media (max-width: 600px) {
+      .page-body { padding: 2rem 1rem 4rem; }
+      .about-card { padding: 1.5rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="floating-stars" aria-hidden="true" id="floatingStars"></div>
+  <script>
+    const container = document.getElementById('floatingStars');
+    const symbols = ['✦','✧','⋆','★','✦','✧','⋆'];
+    for (let i = 0; i < 40; i++) {
+      const s = document.createElement('span');
+      s.className = 'fstar';
+      s.textContent = symbols[i % symbols.length];
+      s.style.left = (Math.random() * 98) + '%';
+      s.style.top  = (Math.random() * 98) + '%';
+      s.style.setProperty('--op',   (0.08 + Math.random() * 0.18).toFixed(2));
+      s.style.setProperty('--size', (0.55 + Math.random() * 0.7) + 'rem');
+      container.appendChild(s);
+    }
+  </script>
+
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="/">
+        <img class="brand-logo" src="logo.png" alt="Auntie Ona">
+        <span class="brand-name">Auntie Ona</span>
+      </a>
+      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/learn-your-sounds">Learn Your Sounds</a></li>
+          <li><a href="/learn-your-numbers">Learn Your Numbers</a></li>
+          <li><a href="/fine-motor">Fine Motor</a></li>
+          <li><a href="/resources">Resources</a></li>
+          <li><a href="/about">About & Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-body">
+
+    <h1 class="page-title">Privacy <em>Policy</em> 🤎</h1>
+    <p class="page-intro">How we look after your details when you visit the site or sign up to hear from us.</p>
+
+    <div class="about-card">
+      <p class="policy-updated">Last updated: 9 September 2026</p>
+
+      <p>Auntie Ona ("we", "us", "our") creates phonics and early-numeracy content for children aged 3–7 and sells educational resources to the parents and carers who support them. This policy explains what personal information we collect, why we collect it, and the choices you have. If you have any questions, email us at <a href="mailto:hello@auntieona.com">hello@auntieona.com</a>.</p>
+
+      <h2>Who this website is for</h2>
+      <div class="section-rule"></div>
+      <p>This website and our shop are intended for <strong>adults</strong> — parents, carers and educators. Although our videos and resources are made for young children, the site itself is not directed at children, and we do not knowingly collect personal information directly from children. If you believe a child has given us their personal information, please contact us at <a href="mailto:hello@auntieona.com">hello@auntieona.com</a> and we will delete it.</p>
+
+      <h2>What we collect</h2>
+      <div class="section-rule"></div>
+      <p>We only collect what we need to run the Auntie Ona brand:</p>
+      <ul>
+        <li><strong>When you join our email list:</strong> your email address, and your first name if you choose to give it. You provide this yourself through our sign-up form.</li>
+        <li><strong>When you download a free resource:</strong> the same sign-up details, so we can send you the freebie and keep you updated.</li>
+        <li><strong>When you buy a resource:</strong> your order is handled by our shop provider (Payhip). They collect the details needed to process your payment and deliver your file. We receive a record of the sale but <strong>we never see or store your full card details.</strong></li>
+        <li><strong>Automatically, when you visit:</strong> basic technical and usage information (for example, pages visited and general location by country) through cookies and analytics. See "Cookies and analytics" below.</li>
+      </ul>
+
+      <h2>How we use your information</h2>
+      <div class="section-rule"></div>
+      <ul>
+        <li>To send you our newsletter — new video alerts, activity ideas and freebies — when you have signed up for it.</li>
+        <li>To deliver any free resource you have requested.</li>
+        <li>To process and deliver resources you buy.</li>
+        <li>To understand how the site is used so we can improve it.</li>
+        <li>To reply to you when you contact us.</li>
+      </ul>
+      <p>We do <strong>not</strong> sell your personal information to anyone.</p>
+
+      <h2>Our legal basis</h2>
+      <div class="section-rule"></div>
+      <ul>
+        <li>For marketing emails, we rely on your <strong>consent</strong> — which you give by signing up, and can withdraw at any time by unsubscribing.</li>
+        <li>For processing an order, we rely on performing our <strong>contract</strong> with you.</li>
+        <li>For basic analytics, we rely on our <strong>legitimate interest</strong> in understanding and improving the site.</li>
+      </ul>
+
+      <h2>The services we use (our processors)</h2>
+      <div class="section-rule"></div>
+      <p>We use trusted third-party services to run the brand. Each has its own privacy policy:</p>
+      <ul>
+        <li><strong>MailerLite</strong> — email list and newsletter delivery.</li>
+        <li><strong>Payhip</strong> — shop, checkout and payment processing.</li>
+        <li><strong>Google / YouTube</strong> — video hosting and analytics.</li>
+        <li><strong>Amazon Associates</strong> — affiliate links (see disclosure below).</li>
+        <li>Our website hosting provider.</li>
+      </ul>
+
+      <h2>Affiliate links</h2>
+      <div class="section-rule"></div>
+      <p>Some pages and emails may contain Amazon affiliate links. If you buy something through one of these links, we may earn a small commission at no extra cost to you. These links appear only in content aimed at parents and carers, never within children's material. As an Amazon Associate we earn from qualifying purchases.</p>
+
+      <h2>Cookies and analytics</h2>
+      <div class="section-rule"></div>
+      <p>We use a small number of cookies to make the site work and to measure how it is used (for example, which pages and videos are popular). You can control or block cookies through your browser settings. Blocking some cookies may affect how the site works.</p>
+
+      <h2>How long we keep your information</h2>
+      <div class="section-rule"></div>
+      <ul>
+        <li>If you are on our email list, we keep your details until you unsubscribe or ask us to remove you.</li>
+        <li>Order records are kept as long as needed for our records and any legal or tax obligations.</li>
+      </ul>
+
+      <h2>Your rights</h2>
+      <div class="section-rule"></div>
+      <p>Depending on where you live, you have the right to:</p>
+      <ul>
+        <li>Ask what personal information we hold about you.</li>
+        <li>Ask us to correct or delete it.</li>
+        <li>Unsubscribe from our emails at any time — every email has an unsubscribe link, or you can email us.</li>
+        <li>Object to certain uses of your information.</li>
+      </ul>
+      <p>To exercise any of these, email <a href="mailto:hello@auntieona.com">hello@auntieona.com</a> and we will respond.</p>
+
+      <h2>International data</h2>
+      <div class="section-rule"></div>
+      <p>Auntie Ona is based in Dubai, United Arab Emirates, and our audience is worldwide. The services we use may store and process information in other countries. By using the site and signing up, you understand your information may be handled outside your home country, under the protections those services provide.</p>
+
+      <h2>Changes to this policy</h2>
+      <div class="section-rule"></div>
+      <p>We may update this policy from time to time. When we do, we will change the "Last updated" date at the top. Significant changes will be highlighted where appropriate.</p>
+
+      <h2>Contact us</h2>
+      <div class="section-rule"></div>
+      <p>Questions about your privacy or this policy? Email <a href="mailto:hello@auntieona.com">hello@auntieona.com</a>.</p>
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <img class="footer-logo" src="logo.png" alt="Auntie Ona" />
+      <p class="footer-tagline">Auntie Ona & Zeb make learning fun 🦓🤎</p>
+      <ul class="footer-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/learn-your-sounds">Learn Your Sounds</a></li>
+        <li><a href="/learn-your-numbers">Learn Your Numbers</a></li>
+        <li><a href="/fine-motor">Fine Motor</a></li>
+        <li><a href="/resources">Resources</a></li>
+        <li><a href="/about">About & Contact</a></li>
+        <li><a href="/privacy" class="active">Privacy</a></li>
+      </ul>
+      <p class="footer-copy">© <span id="year"></span> Auntie Ona · Made with 🤎 for little learners everywhere</p>
+      <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelector('.nav-toggle').addEventListener('click', function () {
+      const open = document.querySelector('.nav-links').classList.toggle('open');
+      this.setAttribute('aria-expanded', open);
+    });
+  </script>
+</body>
+</html>
