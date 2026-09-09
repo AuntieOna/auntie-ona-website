@@ -685,6 +685,28 @@
     .signup-row input:focus { border-color: var(--gold); }
     .signup-row input::placeholder { color: var(--brown-light); }
 
+    .signup-name-row {
+      max-width: 460px;
+      margin: 0 auto 10px;
+    }
+
+    .signup-name-field {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 14px 20px;
+      border-radius: 999px;
+      border: 1.5px solid var(--border);
+      background: white;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      color: var(--brown);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .signup-name-field:focus { border-color: var(--gold); }
+    .signup-name-field::placeholder { color: var(--brown-light); }
+
     .signup-note {
       margin-top: 12px;
       font-size: 0.8rem;
@@ -1139,6 +1161,9 @@
       <p class="signup-gift-badge">🎁 Sign up to our newsletter and get a FREE Phonics Tracker + Stickers</p>
       <img src="phonics-tracker-fan-preview.png" alt="Preview of the free Phonics Tracker pack — instructions, tracker and sticker sheet" class="signup-stickers-preview" />
       <form method="post" onsubmit="return handleSignup(this, event)">
+        <div class="signup-name-row">
+          <input type="text" name="fields[name]" placeholder="Your first name" class="signup-name-field" />
+        </div>
         <div class="signup-row">
           <input type="email" name="fields[email]" placeholder="Your email address" required />
           <button type="submit" class="btn btn-brown">Join free ✨</button>
