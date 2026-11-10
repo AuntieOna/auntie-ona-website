@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Creature Match</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page: #f3f4f1;
+    --stage: #c9cfbf;
+    --frame: #7d8572;
+    --card: #fff8f1;
+    --ink: #2f3a3a;
+    --soft: #5d6656;
+    --yes: #6aa860;
+    --no: #d9826a;
+    --gap: 14px;
+    --cw: min(38vw, 220px);
+    --ch: calc(var(--cw) * 1.2);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--page); color: var(--ink);
+    font-family: "Fredoka", system-ui, sans-serif;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 20px 16px 40px; min-height: 100vh;
+  }
+  h1 { margin: 0 0 4px; font-weight: 700; font-size: clamp(28px, 6vw, 42px); }
+  .sub { margin: 0 0 18px; color: var(--soft); font-size: 18px; }
+
+  .modes { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 16px; }
+  .modes button {
+    font: inherit; font-size: 17px; font-weight: 500; padding: 8px 16px; border-radius: 999px;
+    border: 3px solid var(--frame); background: #fff; color: var(--ink); cursor: pointer;
+  }
+  .modes button[aria-pressed="true"] { background: var(--frame); color: #fff; }
+
+  .question { font-size: clamp(22px, 5vw, 30px); font-weight: 600; margin: 4px 0 14px; text-align: center; }
+
+  .stage {
+    position: relative; background: var(--stage); border-radius: 18px;
+    padding: 0 clamp(16px, 5vw, 48px);
+    display: flex; align-items: center; justify-content: center; gap: clamp(20px, 8vw, 90px);
+    height: calc(var(--ch) * 1.55); width: 100%; max-width: 760px; overflow: hidden;
+  }
+  .card {
+    width: var(--cw); height: var(--ch); flex: none;
+    background: var(--card); border: 10px solid var(--frame); border-radius: 6px;
+    display: flex; align-items: flex-end; justify-content: center; padding: 8px 6px 14px;
+    transition: box-shadow .3s, border-color .3s;
+  }
+  .card svg { display: block; height: auto; }
+  .card.big svg { width: 100%; }
+  .card.small svg { width: 55%; }
+  .card.glow-yes { border-color: var(--yes); box-shadow: 0 0 0 6px rgba(106,168,96,.35); }
+  .card.glow-no { border-color: var(--no); box-shadow: 0 0 0 6px rgba(217,130,106,.35); }
+  .card.blank { align-items: center; font-size: 64px; font-weight: 700; color: var(--frame); }
+
+  #target { transition: opacity .25s, transform .25s; }
+  #target.swap { opacity: 0; transform: scale(.92); }
+
+  .reel { height: 100%; width: var(--cw); position: relative; flex: none; }
+  .strip { position: absolute; left: 0; top: 0; display: flex; flex-direction: column; gap: var(--gap); will-change: transform; }
+
+  .controls { display: flex; gap: 14px; margin-top: 18px; flex-wrap: wrap; justify-content: center; }
+  .btn {
+    font: inherit; font-weight: 700; font-size: 24px; border: none; border-radius: 18px;
+    padding: 14px 30px; cursor: pointer; color: #fff; box-shadow: 0 5px 0 rgba(0,0,0,.15);
+    transition: transform .1s, opacity .2s;
+  }
+  .btn:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,.15); }
+  .btn:disabled { opacity: .35; cursor: default; transform: none; }
+  .go { background: var(--frame); min-width: 160px; }
+  .yes { background: var(--yes); }
+  .no { background: var(--no); }
+  .btn.picked { outline: 5px solid var(--ink); outline-offset: 3px; }
+
+  .feedback { min-height: 40px; margin-top: 16px; font-size: clamp(20px, 4.5vw, 26px); font-weight: 500; text-align: center; }
+  .stars { display: flex; gap: 8px; margin-top: 10px; }
+  .stars span { width: 22px; height: 22px; border-radius: 50%; background: #dfe2d8; transition: background .3s; }
+  .stars span.right { background: #f2c14e; }
+  .stars span.tried { background: #bfc4b5; }
+
+  .done {
+    position: absolute; inset: 0; background: rgba(201,207,191,.96);
+    display: none; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; padding: 16px;
+  }
+  .done.show { display: flex; }
+  .done h2 { margin: 0; font-size: clamp(28px, 6vw, 40px); }
+  .done p { margin: 0; font-size: 22px; }
+  .done .row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+  /* celebration when a child gets it right */
+  .celebrate { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; opacity: 0; z-index: 5; }
+  .celebrate.show { opacity: 1; }
+  .cel-text { font-weight: 700; color: #fff; background: var(--yes); padding: .2em .8em; border-radius: 999px; box-shadow: 0 8px 0 rgba(0,0,0,.12); font-size: clamp(30px, 7vw, 56px); white-space: nowrap; opacity: 0; }
+  .celebrate.show .cel-text { animation: pop 1.7s ease forwards; }
+  @keyframes pop { 0% { transform: scale(.3); opacity: 0; } 16% { transform: scale(1.12); opacity: 1; } 26% { transform: scale(1); } 80% { transform: scale(1); opacity: 1; } 100% { transform: scale(.92); opacity: 0; } }
+  .cel-star { position: absolute; left: 50%; top: 50%; width: var(--s); height: var(--s); background: var(--c); opacity: 0;
+    clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+  .celebrate.show .cel-star { animation: burst 1.4s ease-out .05s forwards; }
+  @keyframes burst { 0% { transform: translate(-50%, -50%) scale(.3); opacity: 1; } 70% { opacity: 1; } 100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1) rotate(var(--r)); opacity: 0; } }
+  .sound { margin-top: 16px; font: inherit; font-size: 16px; padding: 6px 14px; border-radius: 999px; border: 2px solid var(--frame); background: #fff; color: var(--ink); cursor: pointer; }
+  .back { align-self: flex-start; color: var(--soft); font-size: 18px; font-weight: 500; text-decoration: none; margin-bottom: 4px; }
+  .back:hover { color: var(--ink); }
+</style>
+</head>
+<body>
+  <a class="back" href="/games">← All games</a>
+  <h1 id="title">Dino Match</h1>
+  <p class="sub">Press Go. Do they match?</p>
+
+  <div class="modes" role="group" aria-label="Choose a game">
+    <button data-mode="dino">1 · Dinosaurs</button>
+    <button data-mode="sea">2 · Sea creatures</button>
+    <button data-mode="minibeast">3 · Minibeasts</button>
+    <button data-mode="animal">4 · Animals</button>
+  </div>
+
+  <div class="question" id="question"></div>
+
+  <div class="stage">
+    <div class="card blank" id="target">?</div>
+    <div class="reel" id="reel"><div class="strip" id="strip"></div></div>
+
+    <div class="celebrate" id="celebrate" aria-hidden="true"></div>
+
+    <div class="done" id="done">
+      <h2>All done!</h2>
+      <p id="doneText"></p>
+      <div class="row">
+        <button class="btn go" id="again">Play again</button>
+        <button class="btn yes" id="nextGame">Next game</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn go" id="go">Go!</button>
+    <button class="btn yes" id="yesBtn" disabled>✓ Match</button>
+    <button class="btn no" id="noBtn" disabled>✗ Not a match</button>
+  </div>
+
+  <div class="feedback" id="feedback" aria-live="polite"></div>
+  <div class="stars" id="stars"></div>
+  <button class="sound" id="soundBtn" aria-pressed="true">🔊 Sound on</button>
+
+<script>
+const ROUNDS = 5;
+const MATCHES_PER_GAME = 3; // 3 of the 5 rounds are always a match
+const COLOURS = {
+  blue:   ['#6fa8dc', '#3f78b5', '#c4dcf2'],
+  orange: ['#ec8a6c', '#c0583d', '#f7cdbd'],
+  green:  ['#88c070', '#548f3e', '#d3e8c7'],
+  yellow: ['#f4c84f', '#c6951b', '#fbe9b0'],
+  purple: ['#a98bd0', '#7657a6', '#ddd2ef']
+};
+const SIZES = ['big', 'small'];
+const QUESTION = 'Are they exactly the same?';
+const MODES = {
+  dino:      { title: 'Dino Match',      kind: 'dinosaur',     species: ['longneck', 'stego', 'trex', 'trike'],     next: 'sea' },
+  sea:       { title: 'Sea Match',       kind: 'sea creature', species: ['fish', 'crab', 'octopus', 'turtle'],      next: 'minibeast' },
+  minibeast: { title: 'Minibeast Match', kind: 'minibeast',    species: ['ladybird', 'bee', 'butterfly', 'snail'], next: 'animal' },
+  animal:    { title: 'Animal Match',    kind: 'animal',       species: ['cat', 'dog', 'rabbit', 'duck'],          next: 'dino' }
+};
+const NAMES = {
+  longneck: 'long-neck', stego: 'stegosaurus', trex: 'T. rex', trike: 'triceratops',
+  fish: 'fish', crab: 'crab', octopus: 'octopus', turtle: 'turtle',
+  ladybird: 'ladybird', bee: 'bee', butterfly: 'butterfly', snail: 'snail',
+  cat: 'cat', dog: 'dog', rabbit: 'rabbit', duck: 'duck'
+};
+const OUT = '#2f3a4a';
+const PINK = '#e88a9a';
+const BEAK = '#f3a73b';
+
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const other = (arr, not) => pick(arr.filter(x => x !== not));
+const an = n => (/^[aeiou]/i.test(n) ? 'an ' : 'a ') + n;
+const shuffle = arr => { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; };
+let uid = 0;
+
+// ---------- drawings (all 200 x 170, standing on y ≈ 162) ----------
+const eye = (x, y, r = 4) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${OUT}" stroke="none"/><circle cx="${x + r / 3}" cy="${y - r / 3}" r="${r / 3}" fill="#fff" stroke="none"/>`;
+const smile = d => `<path d="${d}" fill="none" stroke-width="2.5" stroke-linecap="round"/>`;
+const legs = (xs, m) => xs.map(x => `<rect x="${x}" y="124" width="19" height="38" rx="8" fill="${m}"/>`).join('');
+const thickLine = (d, colour, w) => `<path d="${d}" fill="none" stroke="${OUT}" stroke-width="${w + 6}" stroke-linecap="round"/><path d="${d}" fill="none" stroke="${colour}" stroke-width="${w}" stroke-linecap="round"/>`;
+
+const DRAW = {
+  // dinosaurs
+  longneck: (m, dk, lt) => `
+    <path d="M48 110 Q20 118 6 94 Q12 126 54 128 Z" fill="${m}"/>
+    ${legs([52, 74, 104, 124], m)}
+    <path d="M116 106 C126 80 128 54 136 36 L160 42 C152 62 148 90 140 120 Z" fill="${m}"/>
+    <ellipse cx="90" cy="112" rx="52" ry="32" fill="${m}"/>
+    <ellipse cx="94" cy="126" rx="34" ry="12" fill="${lt}" stroke="none"/>
+    <ellipse cx="156" cy="32" rx="25" ry="17" fill="${m}"/>
+    ${eye(162, 26)}${smile('M164 39 q6 4 12 -1')}
+    <g fill="${dk}" stroke="none"><circle cx="70" cy="98" r="5"/><circle cx="88" cy="92" r="4"/><circle cx="104" cy="100" r="5"/></g>`,
+  stego: (m, dk, lt) => `
+    <path d="M46 108 Q16 106 4 88 Q10 122 50 128 Z" fill="${m}"/>
+    <polygon points="10,92 4,74 18,94" fill="${dk}"/><polygon points="22,100 18,82 30,102" fill="${dk}"/>
+    ${legs([54, 76, 108, 128], m)}
+    ${[[52, 68], [72, 58], [94, 52], [116, 58], [136, 70]].map(([x, t]) => `<polygon points="${x - 13},96 ${x},${t} ${x + 13},96" fill="${dk}"/>`).join('')}
+    <ellipse cx="92" cy="112" rx="56" ry="30" fill="${m}"/>
+    <ellipse cx="96" cy="126" rx="38" ry="11" fill="${lt}" stroke="none"/>
+    <ellipse cx="154" cy="118" rx="22" ry="16" fill="${m}"/>
+    ${eye(160, 112)}${smile('M162 124 q6 4 11 -1')}
+    <g fill="${dk}" stroke="none"><circle cx="78" cy="106" r="4"/><circle cx="100" cy="100" r="5"/><circle cx="118" cy="110" r="4"/></g>`,
+  trex: (m, dk, lt) => `
+    <path d="M72 108 Q34 120 4 146 Q44 142 82 130 Z" fill="${m}"/>
+    <rect x="74" y="118" width="24" height="44" rx="9" fill="${m}"/>
+    <rect x="102" y="118" width="24" height="44" rx="9" fill="${m}"/>
+    <ellipse cx="98" cy="102" rx="38" ry="38" fill="${m}"/>
+    <ellipse cx="108" cy="112" rx="21" ry="25" fill="${lt}" stroke="none"/>
+    <rect x="124" y="94" width="22" height="10" rx="5" fill="${m}" transform="rotate(32 124 94)"/>
+    <rect x="102" y="20" width="84" height="52" rx="24" fill="${m}"/>
+    ${eye(152, 38)}${smile('M152 58 q14 9 30 -1')}
+    <g fill="${dk}" stroke="none"><circle cx="76" cy="90" r="5"/><circle cx="86" cy="76" r="4"/><circle cx="122" cy="34" r="4"/></g>`,
+  trike: (m, dk, lt) => `
+    <path d="M42 110 Q16 116 6 98 Q10 126 48 128 Z" fill="${m}"/>
+    ${legs([50, 72, 100, 120], m)}
+    <ellipse cx="86" cy="110" rx="52" ry="30" fill="${m}"/>
+    <ellipse cx="88" cy="124" rx="34" ry="11" fill="${lt}" stroke="none"/>
+    <circle cx="136" cy="94" r="31" fill="${dk}"/>
+    <polygon points="146,96 166,62 158,100" fill="#fff4e2"/>
+    <polygon points="162,100 186,72 172,106" fill="#fff4e2"/>
+    <ellipse cx="156" cy="112" rx="28" ry="21" fill="${m}"/>
+    <polygon points="176,108 194,98 182,118" fill="#fff4e2"/>
+    ${eye(160, 106)}${smile('M166 120 q6 4 11 -1')}
+    <g fill="${dk}" stroke="none"><circle cx="66" cy="100" r="4"/><circle cx="86" cy="94" r="5"/></g>`,
+
+  // sea creatures
+  fish: (m, dk, lt) => `
+    <polygon points="48,100 10,70 16,100 10,130" fill="${dk}"/>
+    <path d="M80 66 Q100 32 128 64 Z" fill="${dk}"/>
+    <path d="M92 136 Q102 156 118 136 Z" fill="${dk}"/>
+    <ellipse cx="100" cy="100" rx="62" ry="40" fill="${m}"/>
+    <ellipse cx="104" cy="116" rx="40" ry="15" fill="${lt}" stroke="none"/>
+    <path d="M82 64 Q72 100 82 136" fill="none" stroke="${dk}" stroke-width="7"/>
+    <path d="M110 61 Q100 100 110 139" fill="none" stroke="${dk}" stroke-width="7"/>
+    <ellipse cx="100" cy="100" rx="62" ry="40" fill="none"/>
+    ${eye(140, 90, 5)}${smile('M146 110 q6 4 12 -2')}`,
+  crab: (m, dk, lt) => `
+    <g stroke="${dk}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <path d="M60 108 L30 112 L18 132"/><path d="M62 122 L34 132 L26 152"/><path d="M70 132 L46 146 L42 160"/>
+      <path d="M140 108 L170 112 L182 132"/><path d="M138 122 L166 132 L174 152"/><path d="M130 132 L154 146 L158 160"/>
+      <path d="M66 98 L40 72"/><path d="M134 98 L160 72"/>
+    </g>
+    <circle cx="36" cy="60" r="17" fill="${m}"/><polygon points="36,60 28,40 48,42" fill="#fff8f1" stroke="none"/>
+    <circle cx="164" cy="60" r="17" fill="${m}"/><polygon points="164,60 172,40 152,42" fill="#fff8f1" stroke="none"/>
+    <path d="M86 86 L82 58 M114 86 L118 58" fill="none"/>
+    <circle cx="82" cy="52" r="10" fill="#fff"/><circle cx="118" cy="52" r="10" fill="#fff"/>
+    ${eye(83, 53)}${eye(119, 53)}
+    <ellipse cx="100" cy="112" rx="52" ry="32" fill="${m}"/>
+    <ellipse cx="100" cy="124" rx="32" ry="11" fill="${lt}" stroke="none"/>
+    ${smile('M90 110 q10 8 20 0')}`,
+  octopus: (m, dk, lt) => `
+    ${[54, 76, 98, 120, 140].map((x, i) => `<path d="M${x} 96 q${i % 2 ? 10 : -10} 34 0 58 q9 9 16 0 q${i % 2 ? 6 : -6} -26 4 -58 Z" fill="${m}"/>`).join('')}
+    <ellipse cx="100" cy="74" rx="54" ry="50" fill="${m}"/>
+    <g fill="${dk}" stroke="none"><circle cx="74" cy="46" r="6"/><circle cx="96" cy="36" r="5"/><circle cx="124" cy="44" r="7"/></g>
+    <circle cx="74" cy="92" r="8" fill="${lt}" stroke="none"/><circle cx="126" cy="92" r="8" fill="${lt}" stroke="none"/>
+    ${eye(84, 76, 5)}${eye(116, 76, 5)}${smile('M90 96 q10 8 20 0')}`,
+  turtle: (m, dk, lt) => `
+    <polygon points="32,124 12,132 34,136" fill="${lt}"/>
+    <ellipse cx="62" cy="142" rx="15" ry="18" fill="${lt}"/><ellipse cx="138" cy="142" rx="15" ry="18" fill="${lt}"/>
+    <circle cx="170" cy="112" r="21" fill="${lt}"/>
+    <path d="M30 130 Q30 52 100 52 Q170 52 170 130 Z" fill="${m}"/>
+    <g fill="${dk}" stroke="none">
+      <polygon points="86,74 114,74 126,96 114,118 86,118 74,96"/>
+      <polygon points="44,108 56,86 66,100 58,124 42,124"/>
+      <polygon points="156,108 144,86 134,100 142,124 158,124"/>
+    </g>
+    <rect x="24" y="122" width="152" height="14" rx="7" fill="${dk}"/>
+    ${eye(176, 106)}${smile('M172 120 q5 4 10 -1')}`,
+
+  // minibeasts
+  ladybird: (m, dk, lt) => `
+    <g stroke="${OUT}" stroke-width="5" stroke-linecap="round" fill="none">
+      <path d="M56 96 L30 86"/><path d="M52 118 L26 122"/><path d="M60 140 L36 156"/>
+      <path d="M144 96 L170 86"/><path d="M148 118 L174 122"/><path d="M140 140 L164 156"/>
+      <path d="M92 40 Q84 22 72 18"/><path d="M108 40 Q116 22 128 18"/>
+    </g>
+    <circle cx="72" cy="18" r="5" fill="${OUT}"/><circle cx="128" cy="18" r="5" fill="${OUT}"/>
+    <circle cx="100" cy="56" r="26" fill="#3b3b44"/>
+    <circle cx="90" cy="50" r="6" fill="#fff" stroke="none"/><circle cx="110" cy="50" r="6" fill="#fff" stroke="none"/>
+    <circle cx="91" cy="51" r="3" fill="${OUT}" stroke="none"/><circle cx="111" cy="51" r="3" fill="${OUT}" stroke="none"/>
+    <circle cx="100" cy="110" r="52" fill="${m}"/>
+    <path d="M100 60 L100 162" fill="none"/>
+    <g fill="${OUT}" stroke="none"><circle cx="76" cy="90" r="9"/><circle cx="124" cy="90" r="9"/><circle cx="70" cy="124" r="8"/><circle cx="130" cy="124" r="8"/><circle cx="86" cy="146" r="6"/><circle cx="114" cy="146" r="6"/></g>`,
+  bee: (m, dk, lt) => {
+    const id = 'bee' + (uid++);
+    return `
+    <ellipse cx="86" cy="58" rx="20" ry="32" fill="#ffffff" fill-opacity=".85" transform="rotate(-20 86 58)"/>
+    <ellipse cx="114" cy="60" rx="18" ry="28" fill="#ffffff" fill-opacity=".85" transform="rotate(18 114 60)"/>
+    <polygon points="40,110 18,114 40,122" fill="${OUT}"/>
+    <g stroke="${OUT}" stroke-width="4" stroke-linecap="round"><path d="M80 146 L76 160"/><path d="M100 148 L100 162"/><path d="M120 146 L124 160"/></g>
+    <clipPath id="${id}"><ellipse cx="95" cy="112" rx="58" ry="40"/></clipPath>
+    <ellipse cx="95" cy="112" rx="58" ry="40" fill="${m}"/>
+    <g clip-path="url(#${id})" fill="${dk}" stroke="none"><rect x="64" y="60" width="16" height="110"/><rect x="100" y="60" width="16" height="110"/></g>
+    <ellipse cx="95" cy="112" rx="58" ry="40" fill="none"/>
+    <path d="M152 86 Q150 64 140 56" fill="none" stroke-width="3"/><circle cx="140" cy="56" r="5" fill="${OUT}"/>
+    <circle cx="156" cy="106" r="26" fill="${m}"/>
+    ${eye(164, 100)}${smile('M160 116 q6 4 12 -1')}`;
+  },
+  butterfly: (m, dk, lt) => `
+    <ellipse cx="62" cy="68" rx="44" ry="36" fill="${m}" transform="rotate(-20 62 68)"/>
+    <ellipse cx="138" cy="68" rx="44" ry="36" fill="${m}" transform="rotate(20 138 68)"/>
+    <ellipse cx="68" cy="124" rx="32" ry="28" fill="${dk}" transform="rotate(20 68 124)"/>
+    <ellipse cx="132" cy="124" rx="32" ry="28" fill="${dk}" transform="rotate(-20 132 124)"/>
+    <g fill="${lt}" stroke="none"><circle cx="54" cy="64" r="12"/><circle cx="146" cy="64" r="12"/><circle cx="68" cy="128" r="9"/><circle cx="132" cy="128" r="9"/></g>
+    <path d="M94 40 Q86 20 74 14 M106 40 Q114 20 126 14" fill="none" stroke-width="3"/>
+    <circle cx="74" cy="14" r="5" fill="${OUT}"/><circle cx="126" cy="14" r="5" fill="${OUT}"/>
+    <rect x="91" y="52" width="18" height="104" rx="9" fill="#5a4c56"/>
+    <circle cx="100" cy="46" r="15" fill="#5a4c56"/>
+    <circle cx="94" cy="44" r="3" fill="#fff" stroke="none"/><circle cx="106" cy="44" r="3" fill="#fff" stroke="none"/>`,
+  snail: (m, dk, lt) => `
+    <path d="M156 78 L148 46 M170 78 L180 46" fill="none" stroke-width="3"/>
+    <circle cx="148" cy="44" r="6" fill="${OUT}"/><circle cx="180" cy="44" r="6" fill="${OUT}"/>
+    <rect x="148" y="72" width="34" height="80" rx="17" fill="#e9dcc8"/>
+    <rect x="14" y="134" width="170" height="26" rx="13" fill="#e9dcc8"/>
+    <circle cx="88" cy="94" r="50" fill="${m}"/>
+    <path d="M88 94 a8 8 0 1 1 8 8 a16 16 0 1 1 -16 -16 a26 26 0 1 1 26 26 a36 36 0 1 1 -36 -36" fill="none" stroke="${dk}" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="88" cy="94" r="50" fill="none"/>
+    ${smile('M160 104 q6 5 12 0')}`,
+
+  // animals
+  cat: (m, dk, lt) => `
+    ${thickLine('M138 150 Q186 140 170 96', m, 14)}
+    <polygon points="64,54 68,14 98,40" fill="${m}"/><polygon points="136,54 132,14 102,40" fill="${m}"/>
+    <polygon points="72,46 74,28 88,40" fill="${PINK}" stroke="none"/><polygon points="128,46 126,28 112,40" fill="${PINK}" stroke="none"/>
+    <ellipse cx="100" cy="128" rx="44" ry="34" fill="${m}"/>
+    <ellipse cx="100" cy="134" rx="22" ry="22" fill="${lt}" stroke="none"/>
+    <ellipse cx="84" cy="158" rx="14" ry="7" fill="${m}"/><ellipse cx="116" cy="158" rx="14" ry="7" fill="${m}"/>
+    <circle cx="100" cy="68" r="38" fill="${m}"/>
+    ${eye(86, 62, 5)}${eye(114, 62, 5)}
+    <polygon points="95,76 105,76 100,82" fill="${PINK}"/>
+    ${smile('M100 82 q-4 7 -10 3 M100 82 q4 7 10 3')}
+    <g stroke-width="2" stroke-linecap="round"><path d="M80 78 L56 74"/><path d="M80 84 L58 88"/><path d="M120 78 L144 74"/><path d="M120 84 L142 88"/></g>`,
+  dog: (m, dk, lt) => `
+    ${thickLine('M140 134 Q168 120 162 96', m, 12)}
+    <ellipse cx="100" cy="128" rx="44" ry="34" fill="${m}"/>
+    <ellipse cx="100" cy="134" rx="22" ry="22" fill="${lt}" stroke="none"/>
+    <ellipse cx="84" cy="158" rx="14" ry="7" fill="${m}"/><ellipse cx="116" cy="158" rx="14" ry="7" fill="${m}"/>
+    <circle cx="100" cy="66" r="38" fill="${m}"/>
+    <ellipse cx="62" cy="68" rx="14" ry="30" fill="${dk}" transform="rotate(18 62 68)"/>
+    <ellipse cx="138" cy="68" rx="14" ry="30" fill="${dk}" transform="rotate(-18 138 68)"/>
+    <ellipse cx="100" cy="84" rx="20" ry="14" fill="${lt}"/>
+    <ellipse cx="100" cy="76" rx="8" ry="6" fill="${OUT}"/>
+    ${eye(86, 56, 5)}${eye(114, 56, 5)}
+    <path d="M95 90 q5 14 10 0 Z" fill="${PINK}" stroke-width="2"/>`,
+  rabbit: (m, dk, lt) => `
+    <ellipse cx="84" cy="40" rx="13" ry="34" fill="${m}"/><ellipse cx="116" cy="40" rx="13" ry="34" fill="${m}"/>
+    <ellipse cx="84" cy="42" rx="6" ry="24" fill="${PINK}" stroke="none"/><ellipse cx="116" cy="42" rx="6" ry="24" fill="${PINK}" stroke="none"/>
+    <circle cx="144" cy="146" r="12" fill="#fff"/>
+    <ellipse cx="100" cy="130" rx="42" ry="32" fill="${m}"/>
+    <ellipse cx="100" cy="136" rx="20" ry="20" fill="${lt}" stroke="none"/>
+    <ellipse cx="82" cy="158" rx="16" ry="7" fill="${m}"/><ellipse cx="118" cy="158" rx="16" ry="7" fill="${m}"/>
+    <circle cx="100" cy="82" r="34" fill="${m}"/>
+    ${eye(88, 76, 5)}${eye(112, 76, 5)}
+    <ellipse cx="100" cy="90" rx="5" ry="4" fill="${PINK}"/>
+    <rect x="95" y="96" width="10" height="9" rx="2" fill="#fff" stroke-width="2"/>
+    <circle cx="78" cy="92" r="6" fill="${lt}" stroke="none"/><circle cx="122" cy="92" r="6" fill="${lt}" stroke="none"/>`,
+  duck: (m, dk, lt) => `
+    <polygon points="38,108 14,88 30,122" fill="${m}"/>
+    <path d="M78 146 L72 162 L94 162 Z M108 146 L104 162 L126 162 Z" fill="${BEAK}"/>
+    <rect x="128" y="72" width="34" height="44" rx="12" fill="${m}"/>
+    <ellipse cx="92" cy="116" rx="60" ry="36" fill="${m}"/>
+    <ellipse cx="96" cy="130" rx="40" ry="14" fill="${lt}" stroke="none"/>
+    <ellipse cx="84" cy="110" rx="32" ry="18" fill="${dk}"/>
+    <circle cx="146" cy="66" r="30" fill="${m}"/>
+    <path d="M170 62 Q194 64 196 72 Q186 82 168 78 Z" fill="${BEAK}"/>
+    ${eye(152, 58, 5)}`
+};
+
+function creatureSVG(d) {
+  const [m, dk, lt] = COLOURS[d.colour];
+  return `<svg viewBox="0 0 200 170" aria-hidden="true"><g stroke="${OUT}" stroke-width="3" stroke-linejoin="round">${DRAW[d.species](m, dk, lt)}</g></svg>`;
+}
+
+function cardEl(d) {
+  const el = document.createElement('div');
+  el.className = 'card ' + d.size;
+  el.innerHTML = creatureSVG(d);
+  el.setAttribute('aria-label', `${d.size} ${d.colour} ${NAMES[d.species]}`);
+  return el;
+}
+
+// ---------- rules ----------
+const randCreature = () => ({ species: pick(MODES[mode].species), colour: pick(Object.keys(COLOURS)), size: pick(SIZES) });
+
+function isMatch(a, b) {
+  return a.colour === b.colour && a.size === b.size && a.species === b.species;
+}
+
+let diffQueue = [];
+function makeAnswer(t, wantMatch) {
+  if (wantMatch) return { ...t };
+  // take turns changing colour, size and shape so every game mixes them up
+  if (!diffQueue.length) diffQueue = shuffle(['colour', 'size', 'species']);
+  const keys = [diffQueue.pop()];
+  if (Math.random() < .3) keys.push(pick(['colour', 'size', 'species'].filter(k => k !== keys[0])));
+  const d = { ...t };
+  keys.forEach(k => {
+    if (k === 'colour') d.colour = other(Object.keys(COLOURS), t.colour);
+    if (k === 'size') d.size = other(SIZES, t.size);
+    if (k === 'species') d.species = other(MODES[mode].species, t.species);
+  });
+  return d;
+}
+
+function explain(a, b, match) {
+  const kind = MODES[mode].kind;
+  if (match) return `Same colour, same size, same ${kind}!`;
+  const diffs = [];
+  if (a.colour !== b.colour) diffs.push('colour');
+  if (a.size !== b.size) diffs.push('size');
+  if (a.species !== b.species) diffs.push('shape');
+  return 'Different ' + diffs.join(' and different ') + '.';
+}
+
+
+// ---- celebration: gentle chime + "Well done!" burst ----
+let soundOn = true, actx = null;
+function chime() {
+  if (!soundOn) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const t = actx.currentTime;
+    [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {   // soft rising C-E-G-C
+      const o = actx.createOscillator(), g = actx.createGain(), s = t + i * .11;
+      o.type = 'sine'; o.frequency.value = f;
+      g.gain.setValueAtTime(0, s);
+      g.gain.linearRampToValueAtTime(.16, s + .02);
+      g.gain.exponentialRampToValueAtTime(.001, s + .7);
+      o.connect(g).connect(actx.destination);
+      o.start(s); o.stop(s + .75);
+    });
+  } catch (e) {}
+}
+const PRAISE = ['Well done!', 'Brilliant!', 'Great spotting!', 'Super!'];
+function celebrate() {
+  chime();
+  const c = $('celebrate'), W = c.clientWidth;
+  const cols = ['#f2c14e', '#ec8a6c', '#6fa8dc', '#88c070', '#a98bd0'];
+  let stars = '';
+  for (let i = 0; i < 16; i++) {
+    const a = (i / 16) * Math.PI * 2 + Math.random() * .3, d = W * (.22 + Math.random() * .2);
+    stars += `<span class="cel-star" style="--s:${Math.round(W * (.025 + Math.random() * .025))}px;--c:${cols[i % 5]};--dx:${Math.round(Math.cos(a) * d)}px;--dy:${Math.round(Math.sin(a) * d * .7)}px;--r:${Math.round(Math.random() * 360)}deg"></span>`;
+  }
+  c.innerHTML = stars + `<div class="cel-text">${pick(PRAISE)}</div>`;
+  c.classList.remove('show'); void c.offsetWidth; c.classList.add('show');
+  clearTimeout(celebrate.t); celebrate.t = setTimeout(() => c.classList.remove('show'), 1800);
+}
+
+// ---------- game ----------
+const $ = id => document.getElementById(id);
+let mode = 'dino', round = 0, score = 0, target = null, answer = null, busy = false, plan = [];
+
+function setMode(m) {
+  mode = m;
+  document.querySelectorAll('.modes button').forEach(b => b.setAttribute('aria-pressed', b.dataset.mode === m));
+  $('title').textContent = MODES[m].title;
+  $('question').textContent = QUESTION;
+  diffQueue = [];
+  round = 0; score = 0;
+  plan = shuffle([...Array(MATCHES_PER_GAME).fill(true), ...Array(ROUNDS - MATCHES_PER_GAME).fill(false)]);
+  $('done').classList.remove('show');
+  $('feedback').textContent = '';
+  $('stars').innerHTML = Array.from({ length: ROUNDS }, () => '<span></span>').join('');
+  $('target').className = 'card blank'; $('target').innerHTML = '?';
+  $('strip').innerHTML = ''; $('strip').style.transition = 'none'; $('strip').style.transform = 'none';
+  $('yesBtn').disabled = $('noBtn').disabled = true;
+  $('yesBtn').classList.remove('picked'); $('noBtn').classList.remove('picked');
+  $('go').disabled = false; $('go').textContent = 'Go!';
+  busy = false;
+}
+
+function go() {
+  if (busy) return;
+  busy = true;
+  $('go').disabled = true;
+  $('feedback').textContent = '';
+  $('yesBtn').classList.remove('picked'); $('noBtn').classList.remove('picked');
+
+  target = randCreature();
+  answer = makeAnswer(target, plan[round]);
+
+  const t = $('target');
+  t.classList.add('swap');
+  setTimeout(() => {
+    t.className = 'card ' + target.size;
+    t.innerHTML = creatureSVG(target);
+  }, 200);
+
+  const strip = $('strip');
+  strip.style.transition = 'none';
+  strip.style.transform = 'translateY(0)';
+  strip.innerHTML = '';
+  const N = 18;
+  for (let i = 0; i < N; i++) strip.appendChild(cardEl(i === N - 2 ? answer : randCreature()));
+
+  const reelH = $('reel').clientHeight;
+  const ch = strip.firstChild.offsetHeight;
+  const gap = parseFloat(getComputedStyle(strip).rowGap) || 14;
+  const startY = reelH / 2 - ch / 2 - ch - gap;
+  const endY = reelH / 2 - ((N - 2) * (ch + gap) + ch / 2);
+  strip.style.transform = `translateY(${startY}px)`;
+  strip.offsetHeight;
+  strip.style.transition = 'transform 2.8s cubic-bezier(.12,.62,.18,1)';
+  strip.style.transform = `translateY(${endY}px)`;
+
+  setTimeout(() => {
+    $('yesBtn').disabled = $('noBtn').disabled = false;
+    busy = false;
+  }, 2850);
+}
+
+function choose(saidMatch) {
+  if ($('yesBtn').disabled) return;
+  $('yesBtn').disabled = $('noBtn').disabled = true;
+  (saidMatch ? $('yesBtn') : $('noBtn')).classList.add('picked');
+  const match = isMatch(target, answer);
+  const right = saidMatch === match;
+  if (right) { score++; celebrate(); }
+  const ansCard = $('strip').children[$('strip').children.length - 2];
+  ansCard.classList.add(match ? 'glow-yes' : 'glow-no');
+  $('target').classList.add(match ? 'glow-yes' : 'glow-no');
+  $('feedback').textContent = (right ? 'Well done! ' : 'Not quite. ') + explain(target, answer, match);
+  $('stars').children[round].className = right ? 'right' : 'tried';
+  round++;
+
+  if (round >= ROUNDS) {
+    setTimeout(() => {
+      $('doneText').textContent = `You got ${score} out of ${ROUNDS}!`;
+      $('nextGame').textContent = `Next: ${MODES[MODES[mode].next].title}`;
+      $('done').classList.add('show');
+    }, 1600);
+  } else {
+    $('go').disabled = false;
+    $('go').textContent = 'Next';
+  }
+}
+
+document.querySelectorAll('.modes button').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+$('go').addEventListener('click', go);
+$('soundBtn').addEventListener('click', () => { soundOn = !soundOn; $('soundBtn').textContent = soundOn ? '🔊 Sound on' : '🔇 Sound off'; $('soundBtn').setAttribute('aria-pressed', soundOn); });
+$('yesBtn').addEventListener('click', () => choose(true));
+$('noBtn').addEventListener('click', () => choose(false));
+$('again').addEventListener('click', () => setMode(mode));
+$('nextGame').addEventListener('click', () => setMode(MODES[mode].next));
+
+setMode('dino');
+</script>
+</body>
+</html>
